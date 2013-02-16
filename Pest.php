@@ -56,8 +56,8 @@ class Pest {
       $this->curl_opts[CURLOPT_PROXYUSERPWD] = $user . ":" . $pass;
     }
   }
-  
-  public function get($url, $data=array()) {
+
+  public function get($url, $data=array(), $headers=array()) {
     if (!empty($data)) {
         $pos = strpos($url, '?');
         if ($pos !== false) {
@@ -66,7 +66,10 @@ class Pest {
         $url .= '?' . http_build_query($data);
     }
 
-    $curl = $this->prepRequest($this->curl_opts, $url);
+    $curl_opts = $this->curl_opts;
+    $curl_opts[CURLOPT_HTTPHEADER] = $headers;
+    
+    $curl = $this->prepRequest($curl_opts, $url);
     $body = $this->doRequest($curl);
     
     $body = $this->processBody($body);
